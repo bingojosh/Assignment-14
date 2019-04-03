@@ -1,0 +1,26 @@
+{
+  "name": "assignment-14",
+  "version": "1.0.0",
+  "description": "14th assignment for u of t coding bootcamp",
+  "main": "index.js",
+  "scripts": {
+    "test": "start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bingojosh/Assignment-14.git"
+  },
+  "author": "bingojosh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bingojosh/Assignment-14/issues"
+  },
+  "homepage": "https://github.com/bingojosh/Assignment-14#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.4",
+    "express-handlebars": "^3.0.2",
+    "mongoose": "^5.4.21"
+  }
+}
