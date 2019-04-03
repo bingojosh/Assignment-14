@@ -6,14 +6,24 @@ var cheerio = require("cheerio");
 
 var app = express();
 
-const db = require('./models')
+app.use(express.static("public"));
+
+// parse application body as json
+app.use(express.urlencoded({ extended: true}));
+app.use(express.json);
+
+//handlebars boiler plate
+var exphbs = require("express-handlebars");
+app.engine("handlebars", exphbs({ defaultLayout: "main"}));
+app.set("view engine", "handlebars");
+
+// attach the models for the mongodb
+const db = require('./models');
 
 mongoose.connect("mongodb://localhost/assignment14db", { useNewUrlParser: true });
 
-
-
 app.get("/", function(req, res) {
-  res.send("Hello world");
+  res.render("index");
 });
 
 app.get("/all", function(req, res) {
@@ -84,6 +94,7 @@ app.post("/deleteall", function(req, res) {
         });
 });
 
-app.listen(3000, function() {
-  console.log("App running on port 3000!");
+var PORT = process.env.PORT || 3000
+app.listen(PORT, function() {
+  console.log("App running on port " + PORT);
 });
