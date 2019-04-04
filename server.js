@@ -23,19 +23,15 @@ const db = require('./models');
 mongoose.connect("mongodb://localhost/assignment14db", { useNewUrlParser: true });
 
 app.get("/", function(req, res) {
-  res.render("index");
-});
 
-app.get("/all", function(req, res) {
-
-  db.Article.find({}, function(error, found) {
+  db.Article.find({ saved: false }, function(error, found) {
 
     if (error) {
       console.log(error);
     }
 
     else {
-      res.json(found);
+      res.render("index", found);
     }
   });
 });
@@ -82,16 +78,33 @@ app.get("/scrape", function(req, res) {
   res.json("Scrape completed")
 });
 
-app.post("/deleteall", function(req, res) {
+app.get("/articles/:id", function (req, res) {
 
-    db.Article.remove({},
-        function(err) {
-            if (err) {
-                console.log(err)
-            } else {
-                res.json("Deleted.")
-            }
-        });
+  db.Article.findOne({ _id: req.params.id})
+    .populate("note")
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    })
+})
+
+app.post("/articles/:id", function(req, res) {
+  db.Note.create(req.body)
+    .then(function(dbNote) {
+      return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+    })
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
+app.post("/deleteall", function() {
+    db.Article.drop();
 });
 
 var PORT = process.env.PORT || 3000
