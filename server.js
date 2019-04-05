@@ -10,7 +10,7 @@ app.use(express.static("public"));
 
 // parse application body as json
 app.use(express.urlencoded({ extended: true}));
-app.use(express.json);
+app.use(express.json());
 
 //handlebars boiler plate
 var exphbs = require("express-handlebars");
@@ -20,21 +20,46 @@ app.set("view engine", "handlebars");
 // attach the models for the mongodb
 const db = require('./models');
 
-mongoose.connect("mongodb://localhost/assignment14db", { useNewUrlParser: true });
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/assignment14db"
+
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 app.get("/", function(req, res) {
-
+  // res.json("Hello world!")
   db.Article.find({ saved: false }, function(error, found) {
-
+    // console.log("goodbye")
+    const hbsObject = {
+      Article: found.reverse().splice(found.length - 5)
+    }
     if (error) {
       console.log(error);
+      res.json("Error")
     }
-
     else {
-      res.render("index", found);
+      res.render("index", hbsObject);
     }
   });
 });
+
+app.get("/saved", function(req, res) {
+
+  db.Article.find({ saved: true }, function(err, found) {
+
+    const hbsObject = {
+      Article: found
+    }
+    console.log(found)
+    
+    if(err) {
+      console.log(error);
+      res.json("Error")
+    }
+    else if (found) {
+      res.render("saved", hbsObject);
+    }
+
+  })
+})
 
 app.get("/scrape", function(req, res) {
 
@@ -67,18 +92,30 @@ app.get("/scrape", function(req, res) {
         
             console.log(err);
           }
-          else {
-        
-            console.log(inserted);
-          }
+          // else {
+          //   console.log(inserted);
+          // }
         });
       }
     });
-  });
-  res.json("Scrape completed")
+  }).then(function() {
+    res.redirect("/");
+  })
 });
 
-app.get("/articles/:id", function (req, res) {
+app.put("/api/:article/save", function(req, res) {
+  console.log(req.params.article)
+  db.Article.findOneAndUpdate(
+    { "_id": req.params.article },
+    { "saved": true },
+    { new: true }
+  ).then(function(edited){
+    res.sendStatus(200)
+    console.log(edited)
+  })
+})
+
+app.get("/api/notes/:id", function (req, res) {
 
   db.Article.findOne({ _id: req.params.id})
     .populate("note")
@@ -90,24 +127,38 @@ app.get("/articles/:id", function (req, res) {
     })
 })
 
-app.post("/articles/:id", function(req, res) {
+app.post("/api/notes/:id", function(req, res) {
+  console.log(req.body)
   db.Note.create(req.body)
     .then(function(dbNote) {
       return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
     })
-    .then(function(dbArticle) {
-      res.json(dbArticle);
+    .then(function(result) {
+      console.log(result)
+      res.sendStatus(200);
+    }).catch(function(err){
+      console.log("err" +  err)
     })
-    .catch(function(err) {
-      res.json(err);
-    });
 });
 
-app.post("/deleteall", function() {
-    db.Article.drop();
+app.post("/delete/article/:id", function(req,res) {
+  db.Article.deleteOne({ "_id": req.params.id}).then(
+    function(){
+      res.sendStatus(200)
+    }
+  )
+})
+
+app.post("/deleteall", function(req, res) {
+    db.Article.deleteMany({}).then(
+      function(){
+        res.sendStatus(200);
+      }
+    )
+
 });
 
-var PORT = process.env.PORT || 3000
-app.listen(PORT, function() {
-  console.log("App running on port " + PORT);
+// var PORT = process.env.PORT || 3000
+app.listen(3000, function() {
+  console.log("App running on port " + 3000);
 });

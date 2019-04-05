@@ -1,14 +1,60 @@
-<li>
-    <div class="card my-3">
-        <div class="card-header" >
-            <h3>
-                <a class="article-link" target="_blank" href="{{link}}">{{title}}</a>
-            </h3>
-            <a class="btn btn-success save" data-id="{{_id}}">Save Article</a>
+{{#if saved}}
+    <li>
+        <div class="card my-3">
+            <div class="card-header" >
+                <h3>
+                    <a class="article-link" target="_blank" href="{{link}}">{{title}}</a>
+                </h3>
+                <a class="btn btn-danger delete-saved" data-id="{{_id}}">Remove from Saved</a>
+                <button type="button" data-toggle="modal" data-target=".note-modal" class="btn btn-info note-toggle" data-id="{{_id}}">Article Notes</button>
+            </div>
+            <img class="card-img-left" src={{image}} />
+            <div class="card-body">
+                <p class="card-text">{{summary}}</p>
+                <div class="modal fade note-modal" id="notesmodal" data-id="{{_id}}">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="btn-group float-right"><button type="button" class="close float-right" data-dismiss="modal" aria-hidden="true">&times;</button></div>
+                            <h4 class="modal-title">Notes for article: {{title}}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <ul>
+                            {{#if note}}
+                                <li id={{note}}>
+                                    <button class="btn btn-danger delete-note" data-id="{{note}}">x</button>
+                                </li>
+                            {{else}}
+                                <li>No notes for this article yet.</li>
+                            {{/if}}
+                            </ul>
+                            <textarea placeholder="New Note" class="note-body" rows="4" cols="60"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary save-note" data-id="{{_id}}">Save changes</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <img class="card-img-left" src={{image}} />
-        <div class="card-body">
-            <p class="card-text">{{summary}}</p>
+    </li>
+{{else}}
+    <li>
+        <div class="card my-3">
+            <div class="card-header" >
+                <h3>
+                    <a class="article-link" target="_blank" href="{{link}}">{{title}}</a>
+                </h3>
+                <button class="btn btn-success save" data-id="{{_id}}">Save Article</button>
+            </div>
+            <img class="card-img-left" src={{image}} />
+            <div class="card-body">
+                <p class="card-text">{{summary}}</p>
+            </div>
         </div>
-    </div>
-</li>
+    </li>
+{{/if}}
+
+
+

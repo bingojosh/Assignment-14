@@ -8,33 +8,30 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" href="/">Home</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="/saved">Saved</a>
-        </li>
-        <li>
-            <a class="btn btn-danger mx-2 scrape" href="/scrape">Scrape new Articles!</a>
-        </li>
-        <li>
-            <button class="btn btn-danger clear">Clear Articles</button>
         </li>
         </ul>
     </div>
     </nav>
     <div class="jumbotron" id="main-page">
+    <div class="jumbotron" id="main-page">
         <div class="w-100 h-100 background">
-            <h1 class="text-center">CBC News Scraper</h1>
+            <h1 class="text-center">Saved Articles</h1>
+            <h3 class="text-center">Your Saved Articles</h3>
         </div>
+    </div>
     </div>
     <div class="container">
         <ul class="mx-3 p-0">
-            {{#if Article}}    
+            {{#if Article}}
                 {{#each Article}}
                     {{> article}}
                 {{/each}}
             {{else}}
-                <div class="alert alert-warning" role="alert">Looks like you don't have any articles scraped! Click above to scrape new articles.</div>
+                <div class="alert alert-warning" role="alert">Looks like you don't have any articles saved! Go to the home page to save some articles.</div>
             {{/if}}
         </ul>
     </div>

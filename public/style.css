@@ -1,0 +1,9 @@
+#main-page{
+    background-image: url("banner.jpg");
+}
+.background{
+    background-color: rgba(232, 236, 241, 0.8)!important;
+}
+ul{
+    list-style: none;
+}
